@@ -116,23 +116,55 @@ button:
     entity_category: diagnostic
 
 sensor:
+  - platform: template
+    name: "Average RPM"
+    icon: mdi:pulse
+    unit_of_measurement: 'RPM'
+    accuracy_decimals: 2
+    lambda: |-
+      const std::vector<sensor::Sensor*> sensors = {
+        id(fan1_rpm),
+        id(fan2_rpm),
+        id(fan3_rpm),
+        id(fan4_rpm),
+        id(fan5_rpm),
+        id(fan6_rpm),
+        id(fan7_rpm),
+        id(fan8_rpm)
+      };
+
+      float total = 0.00;
+      int count = 0;
+
+      for (auto *s : sensors) {
+        if (!isnan(s->state)) {
+          total += s->state;
+          count++;
+        }
+      }
+
+      return count > 0 ? total / count : NAN;
+    update_interval: 5s
+
   - platform: pulse_counter
     name: "Fan 1 RPM"
+    id: "fan1_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 32
       inverted: false
-      mode: INPUT_PULLUP
+      mode: INPUT_PULLUP        # Pull-up is required for fan tach readings
     count_mode:
-      rising_edge: INCREMENT
-      falling_edge: DISABLE
-    use_pcnt: true
+      rising_edge: INCREMENT    # Count only the rising edge of each tick
+      falling_edge: DISABLE     # Falling edges might result in lingering values
+    use_pcnt: true              # Use the hardware pulse counter explicitly
     update_interval: 5s
     filters:
-      - multiply: 0.5
+      - multiply: 0.5           # Most fans provide 2 pulses per rotation
 
   - platform: pulse_counter
     name: "Fan 2 RPM"
+    id: "fan2_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 33
@@ -148,6 +180,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 3 RPM"
+    id: "fan3_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 25
@@ -163,6 +196,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 4 RPM"
+    id: "fan4_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 26
@@ -178,6 +212,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 5 RPM"
+    id: "fan5_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 19
@@ -193,6 +228,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 6 RPM"
+    id: "fan6_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 18
@@ -208,6 +244,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 7 RPM"
+    id: "fan7_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 17
@@ -223,6 +260,7 @@ sensor:
 
   - platform: pulse_counter
     name: "Fan 8 RPM"
+    id: "fan8_rpm"
     unit_of_measurement: 'RPM'
     pin:
       number: 16
