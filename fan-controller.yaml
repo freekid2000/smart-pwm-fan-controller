@@ -101,6 +101,7 @@ number:
 switch:
   - platform: gpio
     id: fan_power
+    icon: mdi:fan
     name: "Fan Power"
     pin: GPIO13
 
