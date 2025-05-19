@@ -137,7 +137,7 @@ sensor:
       int count = 0;
 
       for (auto *s : sensors) {
-        if (!isnan(s->state)) {
+        if (!isnan(s->state) && s->state > 0) {
           total += s->state;
           count++;
         }
