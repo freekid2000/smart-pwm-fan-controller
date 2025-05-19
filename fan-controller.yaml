@@ -117,6 +117,33 @@ button:
 
 sensor:
   - platform: template
+    name: "Active Fans"
+    icon: mdi:numeric
+    accuracy_decimals: 0
+    lambda: |-
+      const std::vector<sensor::Sensor*> sensors = {
+        id(fan1_rpm),
+        id(fan2_rpm),
+        id(fan3_rpm),
+        id(fan4_rpm),
+        id(fan5_rpm),
+        id(fan6_rpm),
+        id(fan7_rpm),
+        id(fan8_rpm)
+      };
+
+      int count = 0;
+
+      for (auto *s : sensors) {
+        if (!isnan(s->state) && s->state > 0) {
+          count++;
+        }
+      }
+
+      return count;
+    update_interval: 5s
+
+  - platform: template
     name: "Average RPM"
     icon: mdi:pulse
     unit_of_measurement: 'RPM'
