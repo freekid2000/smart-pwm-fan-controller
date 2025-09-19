@@ -39,6 +39,8 @@ dashboard_import:
 
 esp32:
   board: esp32dev
+  framework:
+      type: esp-idf
 
 preferences:
   flash_write_interval: 15sec
